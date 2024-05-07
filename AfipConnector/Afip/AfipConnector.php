@@ -37,7 +37,7 @@ use SoapFault;
 /**
  * AfipConnector
  * 
- * Interface para conectarse con los servicios de Facturación electrónica de AFIP
+ * Librería para conectarse con los servicios de Facturación electrónica de AFIP
  * 
  * @version 1.0.0_beta
  * @author Javier Rodriguez
