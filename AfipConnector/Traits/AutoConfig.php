@@ -87,7 +87,7 @@ trait  AutoConfig{
              return;
          }
 
-         $env = parse_ini_file($dir.'.env');
+         $env = parse_ini_file($dir.'.AfipConnector');
          foreach($env as $k=>$v){
              $_ENV[$k]=$v;
          }
