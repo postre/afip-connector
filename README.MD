@@ -1,4 +1,4 @@
-
+[![Github All Releases](https://img.shields.io/github/downloads/postre/afip-connector/total.svg)]()
 # AFIP - Connector
 
 **Libreria en PHP de conexión para los servicios de AFIP - Versión 1.0.0_beta**
