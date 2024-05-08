@@ -1,6 +1,0 @@
-CERT_PATH="J:/htdocs/afip-connector/cert/"
-WSDL_PATH="J:/htdocs/afip-connector/wsdl/"
-XML_PATH="J:/htdocs/afip-connector/xml/"
-CUIT="20317236965"
-# CUIT="20268261053"
-PRODUCTION="FALSE"
