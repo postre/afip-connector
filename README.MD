@@ -1,3 +1,5 @@
+POR EL MOMENTO ESTAMOS EN ETAPA DE DESARROLLO Y TESTEO
+
 [![Github All Releases](https://img.shields.io/github/downloads/postre/afip-connector/total.svg)]()
 # AFIP - Connector
 
