@@ -26,21 +26,22 @@
 // NEGLIGENCIA) O DE OTRO MODO, QUE SURJA DE O EN RELACIÓN CON EL USO O EL RENDIMIENTO 
 // DE ESTE SOFTWARE, INCLUSO SI SE HA ADVERTIDO DE LA POSIBILIDAD DE TALES DAÑOS.
 
-function my_autoloader($class) {
-    // Convertimos los '\' en el sistema de archivos en '/'
-    $class = str_replace(['\\',basename(dirname(__FILE__)).'\\'], [DIRECTORY_SEPARATOR,''], $class);
+spl_autoload_register(function ($class) {
+    $prefix = 'AfipConnector\\';
+    $base_dir = __DIR__ . '/';
 
-    // Directorio base de tu proyecto
-    $base_dir = __DIR__ . DIRECTORY_SEPARATOR;
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        return;
+    }
 
-    // Ruta completa del archivo de la clase
-    $file = $base_dir . $class . '.php';
-   
-    // Si el archivo existe, lo incluimos
+    $relative_class = substr($class, $len);  
+
+    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+
     if (file_exists($file)) {
         require $file;
+    } else {
+        die("Clase no encontrada: $class\n Buscando en: $file\n");
     }
-}
-
-// Registramos la función de autocarga
-spl_autoload_register('my_autoloader');
+});

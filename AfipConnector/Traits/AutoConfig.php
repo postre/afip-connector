@@ -79,8 +79,7 @@ trait  AutoConfig{
      }
  
      private function loadEnv(){
-        //  $dir=str_replace('AfipConnector\\Afip','',__DIR__);
-         $dir=str_replace('AfipConnector\\Traits','',__DIR__);
+         $dir = dirname(__DIR__, 2) . '/';
  
  
          if(!empty($_ENV['afip-connector'])){

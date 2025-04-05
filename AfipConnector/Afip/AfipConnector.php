@@ -287,7 +287,7 @@ class AfipConnector{
             return array(
                 'Token' => $this->ta->credentials->token,
                 'Sign'  => $this->ta->credentials->sign,
-                'Cuit'  => $_ENV['CUIT'],
+                'Cuit'  => floatval($_ENV['CUIT']),
             );
 
 

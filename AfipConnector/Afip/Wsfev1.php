@@ -119,7 +119,7 @@ class Wsfev1 extends AfipConnector
                 array(
                     'Auth' => $this->getAuthArray(),
                     'FeCAEReq' => $cbte->get()
-                ),  
+                )
             );
 
             $this->storeCbteFiles($cbte);
