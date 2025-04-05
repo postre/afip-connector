@@ -1,3 +1,5 @@
+POR EL MOMENTO ESTAMOS EN ETAPA DE DESARROLLO Y TESTEO
+
 [![Github All Releases](https://img.shields.io/github/downloads/postre/afip-connector/total.svg)]()
 # AFIP - Connector
 
@@ -19,8 +21,8 @@ No tenemos nada que ver con AFIP, solo quisimos aportar una herramienta a la com
 
 **ACLARACIÓN**: Los nombres de clases, variables y métodos no siguen del todo las buenas prácticas ni los estándares de la industria, lo sabemos y lo hicimos a propósito. Esto se debe a que utilizamos los mismos nombres que AFIP en sus servicios. Creemos que de esta manera será más fácil para los desarrolladores extender su uso, para que cuando lean nuestra documentación y la de AFIP, puedan relacionar rápidamente una función o variable con otra.
 
-
-
+## Documentación en construcción en 
+(https://github.com/postre/afip-connector/wiki)
 
 
 
