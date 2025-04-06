@@ -26,8 +26,9 @@
 // NEGLIGENCIA) O DE OTRO MODO, QUE SURJA DE O EN RELACIÓN CON EL USO O EL RENDIMIENTO 
 // DE ESTE SOFTWARE, INCLUSO SI SE HA ADVERTIDO DE LA POSIBILIDAD DE TALES DAÑOS.
 
+require_once  '../../AfipConnector/autoload.php';
+
 use AfipConnector\Afip\Wsfev1;
 
-require '..\..\AfipConnector\autoload.php';
 $wsfe = new Wsfev1();
 echo $wsfe->json()->FEDummy();
