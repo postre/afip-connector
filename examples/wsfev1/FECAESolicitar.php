@@ -26,16 +26,21 @@
 // NEGLIGENCIA) O DE OTRO MODO, QUE SURJA DE O EN RELACIÓN CON EL USO O EL RENDIMIENTO 
 // DE ESTE SOFTWARE, INCLUSO SI SE HA ADVERTIDO DE LA POSIBILIDAD DE TALES DAÑOS.
 
+require_once  '../../AfipConnector/autoload.php';
+
 use AfipConnector\Afip\Wsfev1;
 use AfipConnector\Models\Cbte;
 use AfipConnector\Models\IVA;
 
-require '..\..\AfipConnector\autoload.php';
 
 $wsfe = new Wsfev1();
+// Obtenemos el último comprobante autorizado por AFIP
 $ultimoCbte=$wsfe->FECompUltimoAutorizado(4,6);
+
+// Al último comprobante autorizado lo incrementamos en 1, o sea seteamos el proximo comprobante a generar.
 $proximoCbte=$ultimoCbte['CbteNro']+1;
 
+// Creamos una instancia de la clase Cbte
 $cbte = new Cbte();
 
 // Cantidad de Comprobantes a autorizar
@@ -89,7 +94,10 @@ $cbte->MonCotiz(1);
 // Alicuotas asociadas al comprobante, objeto IVA
 $cbte->IVA(new IVA(5,10000.00,2100.00));
 
+// Le el Cbte como parámetro al método FECAESolicitar
 echo $wsfe->json()->FECAESolicitar($cbte);
+
+
 
 
 /**
@@ -113,10 +121,10 @@ echo $wsfe->json()->FECAESolicitar($cbte);
 // $cbte->FchVtoPago();  
 
 // Comprobantes asociados, obligatorio para notas de crédito
-// $cbte->CbtesAsoc(new CbtesAsoc(1,4,2,20317236965,date("Ymd")));  
+// $cbte->CbtesAsoc(new CbtesAsoc(1,4,2,20317228595,date("Ymd")));  
 
 // Comprobantes asociados, obligatorio para notas de crédito
-// $cbte->CbtesAsoc(new CbtesAsoc(1,4,3,20317236965,date("Ymd")));  
+// $cbte->CbtesAsoc(new CbtesAsoc(1,4,3,20317228595,date("Ymd")));  
 
 // Tributos asociados al comprobante
 // $cbte->Tributos(new Tributo(5,'IIBB',500,5.2,26));               
@@ -128,10 +136,10 @@ echo $wsfe->json()->FECAESolicitar($cbte);
 // $cbte->Opcionales(new Opcional(10,1));                           
 
 // Compradores asociados al comprobante
-// $cbte->Compradores(new Comprador(80,20268261053,50));            
+// $cbte->Compradores(new Comprador(80,20221064233,50));            
 
 // Compradores asociados al comprobante
-// $cbte->Compradores(new Comprador(96,27687243,50));               
+// $cbte->Compradores(new Comprador(96,27687356,50));               
 
 // Actividades asociadas al comprobante (Wsfev1::FEParamGetActividades())
 // $cbte->Actividades(new Actividad(259999));                       

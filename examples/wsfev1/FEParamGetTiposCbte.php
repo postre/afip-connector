@@ -16,8 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with AFIP-CONNECTOR.  If not, see LICENCE.txt <https://www.gnu.org/licenses/gpl-3.0.html>.
 
+require_once '../../AfipConnector\autoload.php';
+
 use AfipConnector\Afip\Wsfev1;
 
-require '..\..\AfipConnector\autoload.php';
 $wsfe = new Wsfev1();
 echo $wsfe->json()->FEParamGetTiposCbte();
