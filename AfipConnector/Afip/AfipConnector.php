@@ -247,13 +247,19 @@ class AfipConnector{
 
             $wsaa = new WSAA($this->service);
             $this->ta = $wsaa->get();
+
+            $opts = array(
+                'ssl' => array('verify_peer' => false, 'verify_peer_name' => false, 'ciphers'=>'AES256-SHA')
+              );
+
             $this->soapClient = new SoapClient(
                 $this->wsdl,
                 array(
                     'soap_version'   => $this->soap_version,
                     'location'       => $this->url,
                     'trace'          => 1,
-                    'exceptions'     => 1
+                    'exceptions'     => 1,
+                    'stream_context' => stream_context_create($opts)
                 )
             );
         } catch (SoapFault $e) {
