@@ -53,68 +53,76 @@ class WSAA extends AfipConnector
     protected $url_homo       = 'https://wsaahomo.afip.gov.ar/ws/services/LoginCms';
     protected $wsdl_prod      = 'wsaa_prod.wsdl';
     protected $url_prod       = 'https://wsaa.afip.gov.ar/ws/services/LoginCms';
-    
 
-    
-    private function CreateTRA(){
-            $TRA = new SimpleXMLElement(
+
+
+    private function CreateTRA()
+    {
+        $TRA = new SimpleXMLElement(
             '<?xml version="1.0" encoding="UTF-8"?>' .
-            '<loginTicketRequest version="1.0">'.
-            '</loginTicketRequest>');
-            $TRA->addChild('header');
-            $TRA->header->addChild('uniqueId',date('U'));
-            $TRA->header->addChild('generationTime',date('c',date('U')-60));
-            $TRA->header->addChild('expirationTime',date('c',date('U')+60));
-            $TRA->addChild('service',$this->service);
-            $TRA->asXML($this->tra);
+                '<loginTicketRequest version="1.0">' .
+                '</loginTicketRequest>'
+        );
+        $TRA->addChild('header');
+        $TRA->header->addChild('uniqueId', date('U'));
+        $TRA->header->addChild('generationTime', date('c', date('U') - 60));
+        $TRA->header->addChild('expirationTime', date('c', date('U') + 60));
+        $TRA->addChild('service', $this->service);
+        $TRA->asXML($this->tra);
     }
 
-    private function SignTRA(){
-        $STATUS=openssl_pkcs7_sign(
-            $this->tra, 
-            $this->tra_tmp, 
-            "file://".$this->cert,
-            array("file://".$this->key, $this->key_passphrase),
+    private function SignTRA()
+    {
+        $STATUS = openssl_pkcs7_sign(
+            $this->tra,
+            $this->tra_tmp,
+            "file://" . $this->cert,
+            array("file://" . $this->key, $this->key_passphrase),
             array(),
             !PKCS7_DETACHED
-            );
+        );
 
         if (!$STATUS) {
             throw new AfipException("ERROR generating PKCS#7 signature");
         }
-        $inf=fopen($this->tra_tmp, "r");
-        $i=0;
-        $CMS="";
-        while (!feof($inf)) { 
-            $buffer=fgets($inf);
-            if ( $i++ >= 4 ) {$CMS.=$buffer;}
+        $inf = fopen($this->tra_tmp, "r");
+        $i = 0;
+        $CMS = "";
+        while (!feof($inf)) {
+            $buffer = fgets($inf);
+            if ($i++ >= 4) {
+                $CMS .= $buffer;
+            }
         }
         fclose($inf);
         unlink($this->tra_tmp);
-        $this->cms=$CMS;
+        $this->cms = $CMS;
     }
 
-    private function CallWSAA(){
-        try{
-            
-            $this->soapClient=new SoapClient($this->wsdl, array(
-                    'soap_version'   => $this->soap_version,
-                    'location'       => $this->url,
-                    'trace'          => 1,
-                    'exceptions'     => 0
-                    )); 
-            $results=$this->soapClient->loginCms(array('in0'=>$this->cms));
+    private function CallWSAA()
+    {
+        try {
+            $opts = array(
+                'ssl' => array('ciphers' => 'AES256-SHA')
+            );
+            $this->soapClient = new SoapClient($this->wsdl, array(
+                'soap_version'   => $this->soap_version,
+                'location'       => $this->url,
+                'trace'          => 1,
+                'exceptions'     => 0,
+                'stream_context' => stream_context_create($opts)
+            ));
+            $results = $this->soapClient->loginCms(array('in0' => $this->cms));
 
             $this->storeLoginFiles();
-            
-            if (is_soap_fault($results)){
-                throw new AfipException($results->faultstring,$results->faultcode);
+
+            if (is_soap_fault($results)) {
+                throw new AfipException($results->faultstring, $results->faultcode);
             }
             if (!file_put_contents($this->ta_file, $results->loginCmsReturn)) {
                 throw new AfipException('No se pudo crear el archivo TA.xml (Ticket de acceso)');
             }
-            $this->ta=simplexml_load_file($this->ta_file);
-
+            $this->ta = simplexml_load_file($this->ta_file);
         } catch (SoapFault $e) {
             new EvalAfipException($e->getMessage(), $e->getCode());
         } catch (AfipException $e) {
@@ -123,11 +131,12 @@ class WSAA extends AfipConnector
     }
 
 
-    public function get(){
-        try{
+    public function get()
+    {
+        try {
 
-            $existsValidTa=$this->existsValidTA();
-            if($existsValidTa!==false){
+            $existsValidTa = $this->existsValidTA();
+            if ($existsValidTa !== false) {
                 return $existsValidTa;
             }
             $this->validateConditions();
@@ -135,10 +144,8 @@ class WSAA extends AfipConnector
             $this->SignTRA();
             $this->CallWSAA();
             return $this->ta;
-        }catch(AfipException $e){
+        } catch (AfipException $e) {
             throw $e;
         }
     }
-
-   
 }

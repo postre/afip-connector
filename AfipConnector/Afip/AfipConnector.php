@@ -249,8 +249,8 @@ class AfipConnector{
             $this->ta = $wsaa->get();
 
             $opts = array(
-                'ssl' => array('verify_peer' => false, 'verify_peer_name' => false, 'ciphers'=>'AES256-SHA')
-              );
+                'ssl' => array('ciphers'=>'AES256-SHA')
+            );
 
             $this->soapClient = new SoapClient(
                 $this->wsdl,
