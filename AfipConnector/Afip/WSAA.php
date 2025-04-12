@@ -58,22 +58,22 @@ class WSAA extends AfipConnector
 
     private function CreateTRA()
     {
-        $TRA = new SimpleXMLElement(
+        $tra = new SimpleXMLElement(
             '<?xml version="1.0" encoding="UTF-8"?>' .
                 '<loginTicketRequest version="1.0">' .
                 '</loginTicketRequest>'
         );
-        $TRA->addChild('header');
-        $TRA->header->addChild('uniqueId', date('U'));
-        $TRA->header->addChild('generationTime', date('c', date('U') - 60));
-        $TRA->header->addChild('expirationTime', date('c', date('U') + 60));
-        $TRA->addChild('service', $this->service);
-        $TRA->asXML($this->tra);
+        $tra->addChild('header');
+        $tra->header->addChild('uniqueId', date('U'));
+        $tra->header->addChild('generationTime', date('c', date('U') - 60));
+        $tra->header->addChild('expirationTime', date('c', date('U') + 60));
+        $tra->addChild('service', $this->service);
+        $tra->asXML($this->tra);
     }
 
     private function SignTRA()
     {
-        $STATUS = openssl_pkcs7_sign(
+        $status = openssl_pkcs7_sign(
             $this->tra,
             $this->tra_tmp,
             "file://" . $this->cert,
@@ -82,21 +82,21 @@ class WSAA extends AfipConnector
             !PKCS7_DETACHED
         );
 
-        if (!$STATUS) {
+        if (!$status) {
             throw new AfipException("ERROR generating PKCS#7 signature");
         }
         $inf = fopen($this->tra_tmp, "r");
         $i = 0;
-        $CMS = "";
+        $cms = "";
         while (!feof($inf)) {
             $buffer = fgets($inf);
             if ($i++ >= 4) {
-                $CMS .= $buffer;
+                $cms .= $buffer;
             }
         }
         fclose($inf);
         unlink($this->tra_tmp);
-        $this->cms = $CMS;
+        $this->cms = $cms;
     }
 
     private function CallWSAA()

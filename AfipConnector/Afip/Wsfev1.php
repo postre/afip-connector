@@ -43,7 +43,7 @@ use SoapFault;
  * @author Javier Rodriguez
  * 
  * @see https://www.afip.gob.ar/ws/documentacion/ws-factura-electronica.asp
- * @see https://www.afip.gob.ar/ws/WSFEV1/documentos/manual_desarrollador_COMPG_v3_3.pdf
+ * @see https://www.afip.gob.ar/ws/documentacion/manuales/manual-desarrollador-ARCA-COMPG-v4-0.pdf
  * 
  */
 class Wsfev1 extends AfipConnector
@@ -70,10 +70,6 @@ class Wsfev1 extends AfipConnector
         parent::__construct($this->service);
 
     }
-
-
-
-
 
     /**
      * FEDummy
@@ -124,7 +120,6 @@ class Wsfev1 extends AfipConnector
 
             $this->storeCbteFiles($cbte);
 
-            // return $result;
             return $this->handleOutput($result);
         } catch (SoapFault $e) {
             new EvalAfipException($e->getMessage(), $e->getCode());
@@ -155,9 +150,9 @@ class Wsfev1 extends AfipConnector
 
             return $this->handleOutput($result);
         } catch (SoapFault $e) {
-            new EvalAfipException($e->getMessage(), $e->getCode());
+            return new EvalAfipException($e->getMessage(), $e->getCode());
         } catch (AfipException $e) {
-            new EvalAfipException($e->getMessage(), $e->getCode());
+            return new EvalAfipException($e->getMessage(), $e->getCode());
         }
     }
 
@@ -491,6 +486,39 @@ class Wsfev1 extends AfipConnector
         } catch (AfipException $e) {
             new EvalAfipException($e->getMessage(), $e->getCode());
         }
+    }
+    
+    /**
+     * FEParamGetCondicionIvaReceptor
+     * 
+     * Método para consultar valores referenciales de los identificadores de la condición frente
+     * al IVA del receptor (FEParamGetCondicionIvaReceptor)
+     * Esta operación permite consultar los identificadores de la condicion frente al IVA del receptor,
+     * su descripción y a la clase de comprobante que corresponde.
+     *
+     * Ejemplo de uso:
+	 * 		$wsfe = new Wsfev1();
+	 * 		echo $wsfe->json()->FEParamGetCondicionIvaReceptor(1); 
+     * 
+     * @param  integer (2) $claseCmp
+     * @return array|string json
+     */
+    public function FEParamGetCondicionIvaReceptor($claseCmp){
+        try {
+            $this->makeSoapClient();
+            $result = $this->soapClient->FEParamGetCondicionIvaReceptor(
+                array(
+                    'Auth'          => $this->getAuthArray(),
+                    'ClaseCmp'      => $claseCmp
+                )
+            );
+            return $this->handleOutput($result);
+        } catch (SoapFault $e) {
+            new EvalAfipException($e->getMessage(), $e->getCode());
+        } catch (AfipException $e) {
+            new EvalAfipException($e->getMessage(), $e->getCode());
+        }
+
     }
 
 

@@ -55,6 +55,7 @@ namespace AfipConnector\Models;
  *      FchVtoPago
  *      MonId
  *      MonCotiz
+ *      CanMisMonExt
  *      CbtesAso
  *      IVA
  *      Opcionales
@@ -85,12 +86,14 @@ class Cbte extends Model{
     private $FchVtoPago=null;
     private $MonId='PES';
     private $MonCotiz=1;
+    private $CanMisMonExt=null;
+    private $CondicionIVAReceptorId=null;
     private $CbtesAsoc=[];
     private $Tributos=[];
     private $Iva=[];
     private $Opcionales=[];
     private $Compradores=[];
-    private $PeriodoAsoc=[];
+    private $PeriodoAsoc=null;
     private $Actividades=[];
 
     
@@ -493,6 +496,41 @@ class Cbte extends Model{
     }
     
     /**
+     * CanMisMonExt
+     * 
+     * Marca que identifica si el comprobante se cancela en misma moneda del comprobante
+     * (moneda extranjera). Valores posibles S o N.
+     *
+     * Opcional
+     * 
+     * @param  string (1) $CanMisMonExt
+     * @return void
+     */
+    public function CanMisMonExt($CanMisMonExt){
+        $this->CanMisMonExt=$CanMisMonExt;
+        return $this;
+    }
+       
+    /**
+     * CondicionIVAReceptorId
+     * 
+     * Condición Frente al IVA del receptor.
+     * Consultar método “FEParamGetCondicionIvaReceptor”
+     * Campo Condición Frente al IVA del receptor resultará obligatorio conforme lo
+     * reglamentado por la Resolución General N° 5616. Si el valor informado no es valido, para
+     * CAE rechazará y en CAEA observará. Si el valor no existe rechazará en ambos casos.
+     * 
+     * Opcional
+     * 
+     * @param  int (2) $CondicionIVAReceptorId
+     * @return void
+     */
+    public function CondicionIVAReceptorId($CondicionIVAReceptorId){
+        $this->CondicionIVAReceptorId=$CondicionIVAReceptorId;
+        return $this;
+    }
+    
+    /**
      * CbtesAsoc
      *
      * Obejeto tipo CbtesAsoc que envia a AFIP un Array para informar los comprobantes asociados <CbteAsoc>
@@ -619,6 +657,14 @@ class Cbte extends Model{
         $FECAEDetRequest['MonId']       = $this->MonId;
         $FECAEDetRequest['MonCotiz']    = $this->MonCotiz;
 
+        if($this->CanMisMonExt){
+            $FECAEDetRequest['CanMisMonExt'] = $this->CanMisMonExt;
+        }
+
+        if($this->CondicionIVAReceptorId){
+            $FECAEDetRequest['CondicionIVAReceptorId'] = $this->CondicionIVAReceptorId;
+        }
+
         if($this->FchServDesde){
             $FECAEDetRequest['FchServDesde'] = $this->FchServDesde;
         }
@@ -676,7 +722,8 @@ class Cbte extends Model{
             $FECAEDetRequest['PeriodoAsoc']=$this->PeriodoAsoc->toArray();
         }
 
-        $request = [
+
+        return [
 	
 				'FeCabReq' => [
 					'CantReg' 	=>  $this->CbteHasta-$this->CbteDesde+1,
@@ -688,7 +735,6 @@ class Cbte extends Model{
                 ]
         ];
 
-        return $request;
     }
 
 }
