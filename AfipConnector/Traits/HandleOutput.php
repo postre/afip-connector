@@ -53,95 +53,96 @@ trait  HandleOutput
      */
     protected function handleOutput($input)
     {
-        try {
-
-            $method = debug_backtrace()[1]['function'];
-            $output = $this->reduceOutput($input, $method);
-            if ($_ENV['JSON'] === true) {
-                return json_encode($output);
-            }
-            return (array) $output;
-        } catch (Exception $e) {
-            throw $e;
+        $method = debug_backtrace()[1]['function'];
+        $output = $this->reduceOutput($input, $method);
+        if ($_ENV['JSON'] === true) {
+            return json_encode($output);
         }
+        return (array) $output;
+ 
     }
 
     private function reduceOutput($input, $method)
     {
-
+        $output=null;
         switch ($method) {
             // WSFE
-            case 'FEDummy':
-                $this->handleException($input);
-                return $input;
-                break;
             case 'FEParamGetTiposCbte':
                 $this->handleException($input->FEParamGetTiposCbteResult);
-                return $input->FEParamGetTiposCbteResult->ResultGet->CbteTipo;
+                $output = $input->FEParamGetTiposCbteResult->ResultGet->CbteTipo;
                 break;
             case 'FEParamGetTiposConcepto':
                 $this->handleException($input->FEParamGetTiposConceptoResult);
-                return $input->FEParamGetTiposConceptoResult->ResultGet->ConceptoTipo;
+                $output = $input->FEParamGetTiposConceptoResult->ResultGet->ConceptoTipo;
                 break;
             case 'FEParamGetTiposDoc':
                 $this->handleException($input->FEParamGetTiposDocResult);
-                return $input->FEParamGetTiposDocResult->ResultGet->DocTipo;
+                $output = $input->FEParamGetTiposDocResult->ResultGet->DocTipo;
                 break;
             case 'FEParamGetTiposIva':
                 $this->handleException($input->FEParamGetTiposIvaResult);
-                return $input->FEParamGetTiposIvaResult->ResultGet->IvaTipo;
+                $output = $input->FEParamGetTiposIvaResult->ResultGet->IvaTipo;
                 break;
             case 'FEParamGetTiposMonedas':
                 $this->handleException($input->FEParamGetTiposMonedasResult);
-                return $input->FEParamGetTiposMonedasResult->ResultGet->Moneda;
+                $output = $input->FEParamGetTiposMonedasResult->ResultGet->Moneda;
                 break;
             case 'FEParamGetTiposOpcional':
                 $this->handleException($input->FEParamGetTiposOpcionalResult);
-                return $input->FEParamGetTiposOpcionalResult->ResultGet->OpcionalTipo;
+                $output = $input->FEParamGetTiposOpcionalResult->ResultGet->OpcionalTipo;
                 break;
             case 'FEParamGetTiposTributos':
                 $this->handleException($input->FEParamGetTiposTributosResult);
-                return $input->FEParamGetTiposTributosResult->ResultGet->TributoTipo;
+                $output = $input->FEParamGetTiposTributosResult->ResultGet->TributoTipo;
                 break;
             case 'FEParamGetPtosVenta':
                 $this->handleException($input->FEParamGetPtosVentaResult);
-                return $input->FEParamGetPtosVentaResult->ResultGet->PtoVenta;
+                $output = $input->FEParamGetPtosVentaResult->ResultGet->PtoVenta;
                 break;
             case 'FEParamGetCotizacion':
                 $this->handleException($input->FEParamGetCotizacionResult);
-                return $input->FEParamGetCotizacionResult->ResultGet;
+                $output = $input->FEParamGetCotizacionResult->ResultGet;
                 break;
             case 'FECompUltimoAutorizado':
                 $this->handleException($input->FECompUltimoAutorizadoResult);
-                return $input->FECompUltimoAutorizadoResult;
+                $output = $input->FECompUltimoAutorizadoResult;
                 break;
             case 'FECompConsultar':
                 $this->handleException($input->FECompConsultarResult);
-                return $input->FECompConsultarResult->ResultGet;
+                $output = $input->FECompConsultarResult->ResultGet;
                 break;
             case 'FEParamGetActividades':
                 $this->handleException($input->FEParamGetActividadesResult);
-                return $input->FEParamGetActividadesResult->ResultGet->ActividadesTipo;
+                $output = $input->FEParamGetActividadesResult->ResultGet->ActividadesTipo;
                 break;
             case 'FECAESolicitar':
                 $this->handleException($input->FECAESolicitarResult);
-                return $input->FECAESolicitarResult;
+                $output = $input->FECAESolicitarResult;
+                break;
+            case 'FEParamGetCondicionIvaReceptor':
+                $this->handleException($input->FEParamGetCondicionIvaReceptorResult);
+                $output = $input->FEParamGetCondicionIvaReceptorResult->ResultGet->CondicionIvaReceptor;
                 break;
                 // WSRConstanciaInscripcion
             case 'dummy':
                 $this->handleException($input);
-                return $input->return;
+                $output = $input->return;
                 break;
             case 'getPersona_v2':
                 $this->handleException($input);
-                return $input->personaReturn;
+                $output = $input->personaReturn;
                 break;
             case 'getPersonaList_v2':
                 $this->handleException($input);
-                return $input->personaListReturn;
+                $output = $input->personaListReturn;
                 break;
-  
+            default:
+                $this->handleException($input);
+                $output = $input;
+                break;
         }
+
+        return $output;
     }
 
     protected function handleException($error)

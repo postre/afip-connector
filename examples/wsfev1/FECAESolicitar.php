@@ -34,6 +34,7 @@ use AfipConnector\Models\IVA;
 
 
 $wsfe = new Wsfev1();
+
 // Obtenemos el último comprobante autorizado por AFIP
 $ultimoCbte=$wsfe->FECompUltimoAutorizado(4,6);
 
@@ -91,8 +92,13 @@ $cbte->MonId('PES');
 // Cotización de la moneda utilizada, 1 para PES, para ver otras Wsfev1::FEParamGetCotizacion('011')
 $cbte->MonCotiz(1);
 
+                                              
+  
 // Alicuotas asociadas al comprobante, objeto IVA
 $cbte->IVA(new IVA(5,10000.00,2100.00));
+
+// Condición Frente al IVA del receptor. Consultar método “FEParamGetCondicionIvaReceptor”
+$cbte->CondicionIVAReceptorId(5);
 
 // Le el Cbte como parámetro al método FECAESolicitar
 echo $wsfe->json()->FECAESolicitar($cbte);
@@ -148,6 +154,9 @@ echo $wsfe->json()->FECAESolicitar($cbte);
 // $cbte->Actividades(new Actividad(731009));                       
 
 // Período asociado al comprobante
-// $cbte->PeriodoAsoc(new Periodo('20240504','20240505'));           
+// $cbte->PeriodoAsoc(new Periodo('20240504','20240505'));     
+
+// Marca que identifica si el comprobante se cancela en misma moneda del comprobante (moneda extranjera). Valores posibles S o N.
+// $cbte->CanMisMonExt('S');   
 
 
